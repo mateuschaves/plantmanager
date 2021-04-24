@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, View, Text, StyleSheet, Image, FlatList } from 'react-native';
+import { SafeAreaView, View, Text, StyleSheet, Image, FlatList, ScrollView } from 'react-native';
 
 import { Header } from '../components/Header';
 import { PlantCardSecondary } from '../components/PlantCardSecondary';
@@ -61,7 +61,6 @@ export function MyPlants() {
                     <Text style={styles.plantsTitle}>
                         Próximas regadas
                     </Text>
-
                     <FlatList 
                         data={myPlants}
                         keyExtractor={(item) => String(item.id)}
@@ -71,9 +70,6 @@ export function MyPlants() {
                             />
                         )}
                         showsVerticalScrollIndicator={false}
-                        contentContainerStyle={{
-                            flex: 1
-                        }}
                     />
                 </View>
             </View>
