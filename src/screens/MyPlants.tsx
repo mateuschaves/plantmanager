@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, View, Text, StyleSheet, Image, FlatList, ScrollView } from 'react-native';
+import { SafeAreaView, View, Text, StyleSheet, Image, FlatList, Alert } from 'react-native';
 
 import { Header } from '../components/Header';
 import { PlantCardSecondary } from '../components/PlantCardSecondary';
 
 import colors from '../styles/colors';
 import waterdrop from '../assets/waterdrop.png';
-import { loadPlants, PlantProps } from '../libs/storage';
+import { loadPlants, PlantProps, removePlant } from '../libs/storage';
 import { formatDistance } from 'date-fns';
 import { pt } from 'date-fns/locale';
 import fonts from '../styles/fonts';
@@ -14,29 +14,68 @@ import fonts from '../styles/fonts';
 export function MyPlants() {
     const [myPlants, setMyPlants] = useState<PlantProps[]>([]);
     const [loading, setLoading] = useState(true);
-    const [nextWaterd, setNextWaterd] = useState('');
+    const [nextWaterd, setNextWaterd] = useState<string>('');
 
     useEffect(() => {
         loadStorageData();
     }, []);
+
+
+    async function handleConfirmRemovePlant(plant: PlantProps) {
+        try {
+            await removePlant(plant);
+            loadStorageData();
+        } catch (error) {
+            console.error(error);
+            Alert.alert(
+                'Não conseguimos deletar essa planta', 
+                'Nada acontece por acaso 😔✋'
+            );
+        }
+    }
+
+    function handleRemove(plant: PlantProps) {
+        Alert.alert(
+            'Remover', 
+            `Deseja removar a ${plant.name} ?`,
+            [
+                {
+                    text: 'Não 🙏'
+                },
+                {
+                    text: 'Sim 😥',
+                    onPress: () => handleConfirmRemovePlant(plant),
+                }
+            ],
+        );
+    }
 
     async function loadStorageData() {
         const plantsStoraged = await loadPlants();
 
         const [firstPlant] = plantsStoraged;
 
-        const nextTime = formatDistance(
-            new Date(firstPlant.dateTimeNotification).getTime(),
-            new Date().getTime(),
-            {
-                locale: pt,
-            }
-        );
-
-        setNextWaterd(`Não esqueça de regar a ${firstPlant.name} em ${nextTime}`);
+        if(firstPlant) {
+            const nextTime = formatDistance(
+                new Date(firstPlant.dateTimeNotification).getTime(),
+                new Date().getTime(),
+                {
+                    locale: pt,
+                }
+            );
+    
+            setNextWaterd(`Não esqueça de regar a ${firstPlant.name} em ${nextTime}`);
+        } else {
+            setNextWaterd('');
+        }
 
         setMyPlants(plantsStoraged);
         setLoading(false);
+    }
+
+
+    function shouldRenderSpotlightCard() {
+        return nextWaterd?.trim()?.length > 0;
     }
 
     return (
@@ -46,17 +85,18 @@ export function MyPlants() {
                     avatar="https://pbs.twimg.com/profile_images/1361532415718604800/u3h3yg2D_400x400.jpg"
                 />
 
-                <View style={styles.spotlight}>
-                    <Image 
-                        source={waterdrop}
-                        style={styles.spotlightImage}
-                    />
+                {shouldRenderSpotlightCard() && (
+                    <View style={styles.spotlight}>
+                        <Image 
+                            source={waterdrop}
+                            style={styles.spotlightImage}
+                        />
 
-                    <Text style={styles.spotlightText}>
-                        {nextWaterd}
-                    </Text>
-                </View>
-
+                        <Text style={styles.spotlightText}>
+                            {nextWaterd}
+                        </Text>
+                    </View>
+                )}
                 <View style={styles.plants}>
                     <Text style={styles.plantsTitle}>
                         Próximas regadas
@@ -67,6 +107,7 @@ export function MyPlants() {
                         renderItem={({ item }) => (
                             <PlantCardSecondary 
                                 data={item}
+                                handleRemove={() =>  handleRemove(item)}
                             />
                         )}
                         showsVerticalScrollIndicator={false}
