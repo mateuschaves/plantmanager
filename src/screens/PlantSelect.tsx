@@ -1,27 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, SafeAreaView, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
+
 import colors from '../styles/colors';
 import fonts from '../styles/fonts';
+
+import { useNavigation } from '@react-navigation/native';
 
 import { EnvironmentButton } from '../components/EnvironmentButton';
 import { PlantCardPrimary } from '../components/PlantCardPrimary';
 import { Header } from '../components/Header';
 import { Load } from '../components/Load';
 
-import api from '../services/api';
+import { PlantProps } from '../libs/storage';
 
-interface Plant {
-    id: number,
-    name: string,
-    about: string,
-    water_tips: string,
-    photo: string;
-    environments: string[];
-    frequency: { 
-        times: number, 
-        repeat_every: 'day' | 'week' 
-    };
-}
+import api from '../services/api';
 
 interface PlantEnvironment {
     id: number,
@@ -37,16 +29,23 @@ const allPlantsEnvironments = {
 
 export function PlantSelect() {
     const [environments, setEnvironments] = useState<PlantEnvironment[]>();
-    const [plants, setPlants] = useState<Plant[]>([]);
-    const [filteredPlants, setFilteredPlants] = useState<Plant[]>([]);
+    const [plants, setPlants] = useState<PlantProps[]>([]);
+    const [filteredPlants, setFilteredPlants] = useState<PlantProps[]>([]);
     const [environmentSelected, setEnvironmentSelected] = useState<PlantEnvironment>(allPlantsEnvironments);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
     const [loadingMore, setLoadingMore] = useState(true);
-    const [loadedAll, setLoadedAll] = useState(false);
+
+    const navigation = useNavigation();
 
     function handleEnvironmentSelected(environmentSelected: PlantEnvironment) {
         setEnvironmentSelected(environmentSelected);
+    }
+
+    function handlePlantSelect(plant: PlantProps) {
+        navigation.navigate('PlantSave', {
+            plant
+        });
     }
 
     function filterPlants(environmentSelected: PlantEnvironment) {
@@ -85,7 +84,7 @@ export function PlantSelect() {
     }
 
     async function getPlants() {
-        const plants = await api.get<Plant[]>('/plants', {
+        const plants = await api.get<PlantProps[]>('/plants', {
             params: {
                 _sort: 'name',
                 _order: 'asc',
@@ -119,7 +118,6 @@ export function PlantSelect() {
             <SafeAreaView style={styles.container}>
                 <View style={styles.content}>
                     <Header 
-                        name="Mateus"
                         avatar="https://pbs.twimg.com/profile_images/1361532415718604800/u3h3yg2D_400x400.jpg"
                     />
 
@@ -153,6 +151,7 @@ export function PlantSelect() {
                             renderItem={({ item }) => (
                                 <PlantCardPrimary 
                                     data={item}
+                                    onPress={() => handlePlantSelect(item)}
                                 />
                             )}
                             keyExtractor={item => item.id.toString()}

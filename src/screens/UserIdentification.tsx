@@ -8,14 +8,18 @@ import {
     KeyboardAvoidingView, 
     Platform, 
     TouchableWithoutFeedback, 
-    Keyboard 
+    Keyboard,
+    Alert,
 } from 'react-native';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { Button } from '../components/Button';
 
 import colors from '../styles/colors';
 import fonts from '../styles/fonts';
 import { useNavigation } from '@react-navigation/core';
+import { PlantProps } from '../libs/storage';
 
 export function UserIdentification() {
     const [isFocused, setIsFocused] = useState(false);
@@ -38,9 +42,24 @@ export function UserIdentification() {
         setName(value);
     }
 
+    async function saveUserName(username: string) {
+        return AsyncStorage.setItem('@plantmanager/username', username);
+    }
 
-    function handleConfirmation() {
-        navigation.navigate('Confirmation');
+
+    async function handleConfirmation() {
+        if(!name?.trim())
+            return Alert.alert('Me diz como chamar você 🥺');
+
+        await saveUserName(name);
+
+        navigation.navigate('Confirmation', {
+            title: 'Prontinho',
+            subtitle: 'Agora vamos começar a cuidar das suas plantinhas com muito cuidado.',
+            buttonTitle: 'Começar',
+            icon: 'success',
+            nextScreen: 'PlantSelect',
+        });
     }
 
     function handleScreenTouch() {
