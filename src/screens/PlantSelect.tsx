@@ -13,7 +13,7 @@ import { Load } from '../components/Load';
 
 import { PlantProps } from '../libs/storage';
 
-import api from '../services/api';
+import ApiJson from '../services/server.json';
 
 interface PlantEnvironment {
     id: number,
@@ -70,34 +70,13 @@ export function PlantSelect() {
     }, [environmentSelected, plants]);
 
     async function getPlantEnvironments() {
-        const plantsEnvironmentResponse = await api.get<PlantEnvironment[]>('/plants_environments', {
-            params: { 
-                _sort: 'title',
-                _order: 'asc'
-            }
-        });
-
-        setEnvironments([
-            allPlantsEnvironments,
-            ...plantsEnvironmentResponse.data,
-        ]);
+        setEnvironments(ApiJson.plants_environments);
     }
 
     async function getPlants() {
-        const plants = await api.get<PlantProps[]>('/plants', {
-            params: {
-                _sort: 'name',
-                _order: 'asc',
-                _page: page,
-                _limit: 8,
-            }
-        });
-        if(!plants.data)
-            return setLoading(true);
-        if(page > 1)
-            setPlants(oldPlants => [...oldPlants, ...plants.data]);
-        else
-            setPlants(plants.data);
+        const plants = ApiJson.plants;
+
+        setPlants(plants);
 
         setLoadingMore(false);
     }
@@ -118,7 +97,7 @@ export function PlantSelect() {
             <SafeAreaView style={styles.container}>
                 <View style={styles.content}>
                     <Header 
-                        avatar="https://pbs.twimg.com/profile_images/1361532415718604800/u3h3yg2D_400x400.jpg"
+                        avatar="https://avatar.iran.liara.run/public/boy?username=Ash"
                     />
 
                     <Text style={styles.title}>
@@ -157,8 +136,6 @@ export function PlantSelect() {
                             keyExtractor={item => item.id.toString()}
                             showsVerticalScrollIndicator={false}
                             numColumns={2}
-                            onEndReachedThreshold={0.1}
-                            onEndReached={({ distanceFromEnd }) => handleFetchMorePlants(distanceFromEnd)}
                             ListFooterComponent={
                                 loadingMore ? <ActivityIndicator color={colors.green}/> : <></>
                             }

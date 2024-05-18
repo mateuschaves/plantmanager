@@ -5,10 +5,10 @@
   ],
 
   "plants_environments": [
-    {"key": "living_room", "title": "Sala"},
-    {"key": "bedroom", "title": "Quarto"},
-    {"key": "kitchen", "title": "Cozinha"},
-    {"key": "bathroom", "title": "Banheiro"}
+    {"id": 1, "key": "living_room", "title": "Sala"},
+    {"id": 2, "key": "bedroom", "title": "Quarto"},
+    {"id": 3, "key": "kitchen", "title": "Cozinha"},
+    {"id": 4, "key": "bathroom", "title": "Banheiro"}
   ],
 
   "plants": [
@@ -130,6 +130,18 @@
       "frequency": {
         "times": 1,
         "repeat_every": "day"
+      }
+    },
+    {
+      "id": 11,
+      "name": "Jiboia",
+      "about": "A espécie de trepadeira é uma boa pedida para decorar ambientes internos ou como forração em áreas externas com árvores.",
+      "water_tips": "Regue moderadamente três vezes na semana",
+      "photo": "https://storage.googleapis.com/golden-wind/nextlevelweek/05-plantmanager/6.svg",
+      "environments": ["living_room"],
+      "frequency": {
+        "times": 3,
+        "repeat_every": "week"
       }
     }
   ]

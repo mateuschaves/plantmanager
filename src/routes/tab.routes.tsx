@@ -9,7 +9,12 @@ const AppTab = createBottomTabNavigator();
 
 const AuthRoutes = () => {
     return (
-        <AppTab.Navigator 
+        <AppTab.Navigator
+            screenOptions={{
+                tabBarStyle: {
+                    backgroundColor: 'white'
+                }
+            }}
             tabBarOptions={{
                 activeTintColor: colors.green,
                 inactiveTintColor: colors.heading,

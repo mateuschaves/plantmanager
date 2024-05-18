@@ -113,10 +113,12 @@ export function PlantSave() {
                     </Text>
 
                     {showDatePicker && <DateTimePicker 
-                        value={selectedDateTime}
-                        mode="time"
-                        display="spinner"
-                        onChange={handleChangeTime}
+                            value={selectedDateTime}
+                            mode="time"
+                            display="spinner"
+                            onChange={handleChangeTime}
+                            accentColor='black'
+                            textColor='black'
                         />
                     }
 
@@ -170,6 +172,7 @@ const styles = StyleSheet.create({
         color: colors.heading,
         fontSize: 17,
         marginTop: 10,
+        paddingBottom: 50,
     },
     controller: {
         backgroundColor: colors.white,
@@ -190,7 +193,6 @@ const styles = StyleSheet.create({
         fontFamily: fonts.text,
         color: colors.blue,
         fontSize: 17,
-        textAlign: 'justify',
     },
     tipImage: {
         width: 56,
@@ -203,8 +205,11 @@ const styles = StyleSheet.create({
         backgroundColor: colors.blue_light,
         padding: 20,
         borderRadius: 20,
-        position: 'relative',
-        bottom: 60,
+        transform: [
+            {
+                translateY: -50,
+            }
+        ]
     },
     dateTimePickerButton: {
         width: '100%',

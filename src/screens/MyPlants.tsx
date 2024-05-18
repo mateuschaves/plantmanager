@@ -82,7 +82,7 @@ export function MyPlants() {
         <SafeAreaView style={styles.container}>
             <View style={styles.content}>
                 <Header
-                    avatar="https://pbs.twimg.com/profile_images/1361532415718604800/u3h3yg2D_400x400.jpg"
+                    avatar="https://avatar.iran.liara.run/public/boy?username=Ash"
                 />
 
                 {shouldRenderSpotlightCard() && (

@@ -13,8 +13,8 @@ export interface PlantProps {
         times: number, 
         repeat_every: 'day' | 'week' 
     };
-    hour: string;
-    dateTimeNotification: Date;
+    hour?: string;
+    dateTimeNotification?: Date;
 }
 
 export interface StoragePlantProps {
